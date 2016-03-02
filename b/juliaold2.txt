@@ -1,0 +1,28 @@
+  case(julia):
+    float x0=.3;
+    float y0=-.5;
+    float tnx2, tny2, nx, ny, tny;
+    bool im;
+    for(float x=-2; x<2; x+=1.0/160.0)
+      {
+      for(float y=-1.5; y<1.5; y+=1.0/160.0)
+        {
+        nx = x;
+        ny = y;
+        im = true;
+        for(int iter=0; iter<25; iter++)
+          {
+          tny2=ny*ny;
+          tnx2=nx*nx;
+          if(tny2+tnx2>4) {
+            im = false;
+            break;
+            }
+          ny=2*nx*ny + y0;
+          nx = tnx2-tny2+ x0;
+          }
+        if(im) putpixel(buf, (x+2)*160, (y+1.5)*160, 15);
+        }
+      }    
+          
+    break;    

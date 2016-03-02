@@ -1,0 +1,30 @@
+# Project: julia6
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = 
+OBJ  = julia6b.o $(RES)
+LINKOBJ  = julia6b.o $(RES)
+LIBS =  -L"d:/Dev-Cpp/lib" -mwindows -lmingw32 -lSDLmain -lSDL   -s 
+INCS =  -I"d:/Dev-Cpp/include" 
+CXXINCS =  -I"d:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"d:/Dev-Cpp/include/c++/3.4.2/backward"  -I"d:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"d:/Dev-Cpp/include/c++/3.4.2"  -I"d:/Dev-Cpp/include" 
+BIN  = julia6.exe
+CXXFLAGS = $(CXXINCS)    -fexpensive-optimizations -O3
+CFLAGS = $(INCS)   -fexpensive-optimizations -O3
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before julia6.exe all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o "julia6.exe" $(LIBS)
+
+julia6b.o: julia6b.cpp
+	$(CPP) -c julia6b.cpp -o julia6b.o $(CXXFLAGS)
