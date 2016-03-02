@@ -1,2 +1,7 @@
-# julia
-Various C++ programs for interacting with the Julia set of fractals. 
+Various small programs and versions of them in C++ (and 1 or so in Python) related to Julia set fractals
+
+I'm not sure what most of these are, it's been too long since I made them, but I know that one of them shows in real-time the Julia fractal associated with whatever point on the complex plane you click on, with an outline of the Mandelbrot set always on top, for insight into the relationship between areas of the Mandelbrot set their corresponding Julia sets--for example, any Julia set associated with an area outside the Mandelbrot set will be disconnected, while any inside will be fully connected.
+
+Another one shows the Mandelbrot set and whereever the mouse pointer is in the window it shows the path of iterations, as connected lines, originating from that point, that's used to determine if that point is inside or outside the Mandelbrot. In other words, if the pattern you see at that point starts going in smaller and smalle circles it's not divergent and is inside the Mandelbrot set. If it spirals or chaotically swings outward then it's divergent and isn't a point in the Mandelbrot set. Points in different areas of the Mandelbrot do different interesting things. It updates it pretty quickly, reflecting in real-time the path associated with whevere the mouse pointer is. 
+
+I've never seen the second thing done anywhere else, so it's worth checking out. It's either julia4 or julia6 I think.
