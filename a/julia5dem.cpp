@@ -1,6 +1,6 @@
 //todo: multicore
 
-//Richard A. Nichols III (inhahe@gmail.com)
+//Inhahe (inhahe@gmail.com)
 //with code from http://en.wikipedia.org/wiki/File:Demj.jpg
 
 #include "SDL/SDL.h"

@@ -1,4 +1,4 @@
-#Richard Albert Nichols III (http://www.gate.net/~inhahe)
+#Inhahe (http://www.gate.net/~inhahe)
 
 import psyco
 psyco.full()

@@ -1,36 +1,33 @@
-//can work with 30 fps or more if resolution is lowered.  iters can also be lowered for lower 
-//resolutions, or maybe even with this resolution, i'm not sure.  
-
-//since new computers are multi-core, we should probably break the julias up into a 
-//section for each core, but i don't have multi-core so i didn't bother to try.
-
-//adding out-coloring based on number of iterations would probably not have a noticeable
-//effect on speed.
+#include "SDL/SDL.h"
+#include <cmath>
+#include <iostream>
+#include <fstream>
 
 //Inhahe (inhahe@gmail.com)
 
-#include "SDL/SDL.h"
+using namespace std;
 
-  const int xres = 800;
-  const int yres = 600;
-  const int iters = 80;
-  int rcol = 0, gcol = 0, bcol = 255;
-  int mrcol = 255, mgcol = 255, mbcol = 255;
-  const float  zrs = -2, zre = 2;
-  const float upp = (zre-zrs)/xres;
-  const float zis = -yres*upp/2, zie = yres*upp/2;
-  const float cis = zis, crs = zrs, cie=zie, cre=zre;
-  char mandelpix[xres*yres];
-  SDL_Surface *screen;
-  SDL_Surface *pixsurf;
-  SDL_Rect *rect;
-  int pitch;
-  int bpp ;
-  int pitchadd ;
+const int zrres=250, zires=250, cires=250, crres=250;
+const char * filename = "d:\\juliabits.aloreucrlauebin";
+int xres, yres;
+int iters = 80;
+int rcol = 255, gcol = 0, bcol = 0;
+int mbcol=255, mrcol=255, mgcol=255;
+float zrs, upp, zis, cis, crs, ci = -2, zre = 2, zie, cre, cie;
+SDL_Surface *screen;
+SDL_Surface *pixsurf;
+SDL_Rect *rect;
+int pitch;
+int bpp ;
+int pitchadd ;
+char * julia;
     
 bool quit = false;
-  Uint32 color;
-  Uint32 mandelcolor;
+Uint32 color;
+Uint32 mandelcolor;
+
+bool getvalue(int cr, int ci, int zr, int zi);
+char * mandelpix;
 
 void update(float cr, float ci);
 bool isinset(float cr, float ci, float zr, float zi);
@@ -38,17 +35,20 @@ void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
 int miniter(float cr, float ci, float zr, float zi);
 void unlock_screen();
 bool lock_screen();
+bool loadjulia(const char * filename);
 void drawmandelbrot();
+
 
 int main( int argc, char* args[] ) 
   {
+  yres=xres=(int)sqrt(crres*crres+cires*cires+zrres*zrres+zires*zires);
+  upp = (zre-zrs)/xres;
+  zis = -yres*upp/2; zie = yres*upp/2;
+  cis = zis; crs = zrs; cie=zie; cre=zre;
+  mandelpix = new char[xres*yres];
+  loadjulia(filename);
 
-    rect = new SDL_Rect;
-    rect->x = 0;
-    rect->y = 0;
-    rect->w = xres;
-    rect->y = yres;
-   
+
     /* Initialize the SDL library */
     if( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
         fprintf(stderr,
@@ -109,6 +109,8 @@ void update(float cr, float ci)
 
   float zi, zr;
   int x, y, mi = 0;
+  int cri = (int)((cr-crs)/upp);
+  int cii = (int)((ci-cis)/upp);
   char * cp = (char *) screen->pixels;
   
   if(!lock_screen()) return;
@@ -116,8 +118,9 @@ void update(float cr, float ci)
   for(zi=zis, y=0; y<yres; zi+=upp, y++) {
     for(zr=zrs, x=0; x<xres; zr+=upp, x++) {
       if(mandelpix[mi]!=2) {
-        if(isinset(cr, ci, zr, zi)) { 
+//        if(isinset(cr, ci, zr, zi)) { 
 //        if(isinset(zr, zi, cr, ci)) { 
+          if(getvalue(cri, cii, x, y)) {
           *cp = color; }
         else { 
           *cp = 0; } }
@@ -137,7 +140,7 @@ void drawmandelbrot()  {
   int mi = 0;
   for(zi=zis, y=0; y<yres; zi+=upp, y++) {
     for(zr=zrs, x=0; x<xres; zr+=upp, x++) {
-      if(isinset(zr, zi, 0, 0)) { 
+      if(getvalue(x, y, 0, 0)) { 
         mandelpix[mi] = 1; } 
       mi++; } }  
 
@@ -161,17 +164,6 @@ void drawmandelbrot()  {
   
 }
  
-bool isinset(float cr, float ci, float zr, float zi) {
-  float zr2, zi2, zrt;
-  for(int i=0;i<iters; i++) {
-    zr2 = zr*zr; zi2 = zi*zi;
-    if((zr2+zi2)>4) return false;
-    zrt = zr;
-    zr = zr2-zi2+cr;
-    zi = 2*zrt*zi+ci; }
-  return true; }
-
-
 
 bool lock_screen() {
 /* Lock the screen for direct access to the pixels */
@@ -184,4 +176,52 @@ bool lock_screen() {
 void unlock_screen() {
   if(SDL_MUSTLOCK(screen)) {
     SDL_UnlockSurface(screen); } }
+
+bool loadjulia(const char * filename) {
+
+
+
+
+  cerr << cires << ',' << crres << ',' << zires << ',' << zrres << ',' ;  
+  
+  streamsize size = (long long int)cires * (long long int)crres * (long long int )zires * (long long int)zrres / 8;
+
+cerr << '.' << size << '.';  
+
+  julia = new char(size); // cross fingers..
+  if(julia==0) {cerr << "Could not allocate "<< size <<" bytes of memory" << endl;
+    exit(1);
+  }
+ifstream ifile;
+ifile.exceptions ( ifstream::eofbit | ifstream::failbit | ifstream::badbit );
+
+try {
+  ifile.open(filename, ios::binary);
+
+  ifile.seekg (0, ios::end);
+  ifile.read(julia, size); 
+
+  }
+catch (ios_base::failure &f) {
+  
+  cerr << '/' << f.what() << '/' ; 
+  
+  exit(1);
+  }
+
+  cerr << ifile.fail() << ifile.eof() << ifile.bad();
+
+}
+  
+  
+  
+  
+
+bool getvalue(int cr, int ci, int zr, int zi) {
+  int index = cr*cires*zrres*zires + ci*zrres*zires + zr*zires + zi;
+  return (julia[index>>3]>>(index & 7)) & 1;
+
+}
+
+
 

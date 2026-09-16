@@ -7,7 +7,7 @@
 //adding out-coloring based on number of iterations would probably not have a noticeable
 //effect on speed.
 
-//Richard A. Nichols III (inhahe@gmail.com)
+//Inhahe (inhahe@gmail.com)
 
 #include "SDL/SDL.h"
 

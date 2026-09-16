@@ -2,7 +2,7 @@
 //this program is probably cross-platform but i can't say for sure. i compiled it under mingw. 
 //this is called julia6 but it's actually only about the mandelbrot. 
 
-//Richard A. Nichols III (inhahe@gmail.com)
+//Inhahe (inhahe@gmail.com)
 
 #include "SDL/SDL.h"
 
